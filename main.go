@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"math/rand"
+	"strings"
+	"time"
+)
 
 func main() {
 	// ============== A.9 VARIABLE ==============
@@ -138,4 +144,168 @@ func main() {
 	fmt.Println(fruits)
 	// ============== A.14 ARRAY ==============
 
+	// ============== A.15 SLICE ==============
+	// slice adalah reference elemen array.
+	// inisialisasi slice
+	var _ = []string{"kimi no nama", "naruto", "jujutsu no kaisen"}
+
+	// inisialisasi array
+	// var _ = [2]string{"banana", "apple"}
+
+	// perbedaan inisialisasinya adalah ga perlu dikasi tau jumlah elemen arraynya berapa
+	var _ = []string{"apple", "banana"}        //slice
+	var _ = [2]string{"tomato", "avocado"}     //array
+	var _ = [...]string{"papaya", "pineapple"} //array
+
+	// ARRAY VS SLICE
+	// gabisa dibedanya, array = kumpulan nilai, slice = referensi tiap elemen
+	// slice bisa dibentuk dari array yang sudah didefinisikan
+	var forFruits = []string{"apple", "grape", "banana", "melon"}
+	var copyForFruits = forFruits[0:2] //0 sampai sebelum 2
+
+	// len vs cap
+	// len dari copyTwoFruits adalah 2
+	// cap dari copyTwoFruits adalah 4 => len ori dari twoFruits
+	fmt.Println(len(copyForFruits))
+	fmt.Println(cap(forFruits))
+
+	// append => menambahkan elemen ke akhir slice
+	var _ = append(forFruits, "papaya")
+
+	// copy
+	destination := make([]string, 3)
+	source := []string{"watermelon", "pinneaple", "apple", "grape", "orange"}
+	n := copy(destination, source) //masukin 3 elemn ke destination dari source
+
+	fmt.Println(destination)
+	fmt.Println(source)
+	fmt.Println(n)
+
+	// akses elemen dengan 3 index
+	// fruits[0:1:1] => akses elemen 0 sampai sebelum 1, dan capacity nya adalah 1
+	// angka capacity gaboleh melebihi capacity slice yang akan di slicing.
+
+	// ============== A.15 SLICE ==============
+
+	// ============== A.16 MAP ==============
+	var chicken map[string]int //key nya string, valuenya int
+	chicken = map[string]int{} //penambahan {} digunakan untuk menginisiasi nilai awal biar ga nil, kalau dibiarin nil bakalan error pas nampung data
+
+	chicken["jan"] = 50
+	chicken["feb"] = 40
+
+	fmt.Println("januari = ", chicken["jan"])
+
+	// atau kalau mau bikin var map dan langsung di assign nilai bisa kaya gini
+	var chicken2 = map[string]int{
+		"jan":  40,
+		"feb":  30,
+		"mar":  20,
+		"apr":  90,
+		"may":  50,
+		"june": 20,
+	}
+
+	// variable map bisa di inisialiassi dengan tanpa nilai awal, yaitu dengan pake tanda kurung kurawal = map[string]int{}
+	// atau bisa juga dengan menggunakan keyword make dan new, contoh
+	var _ = map[string]int{}
+	var _ = make(map[string]int)
+	var _ = *new(map[string]int)
+	// intinya ketiga cara diatas sama semua
+
+	// iterasi map pake for range
+	for key, val := range chicken2 {
+		fmt.Println(key, " \t:", val)
+	}
+
+	delete(chicken2, "may")
+	var value, isExist = chicken2["may"]
+
+	if isExist {
+		fmt.Println(value)
+	} else {
+		fmt.Println("item is not exist")
+	}
+
+	// kombinasi slice dan map
+	// misalnya dipake buat nyimpen arrat yang isinya informasi siswa
+	// ex: []map[string]int = slice yang tipe tiap elemennya map[string]int
+
+	var absenChicken = []map[string]string{
+		{"name": "chicken blue", "gender": "male"},
+		{"name": "chicken red", "gender": "male"},
+		{"name": "chicken green", "gender": "female"},
+	}
+
+	for _, chick := range absenChicken {
+		fmt.Println(chick["gender"], " = ", chick["name"])
+	}
+	// ============== A.16 MAP ==============
+
+	printMessage("nama nama buah", fruits)
+	randomValue := randomWithRange(2, 10)
+	fmt.Println("random number", randomValue)
+
+	var diameter float64 = 15
+	var area, circumference = calculate(diameter)
+	fmt.Println("luas = ", area)
+	fmt.Println("keliling = ", circumference)
+
+	var avg = countAverage(2, 1, 3, 4, 2, 2, 3, 4, 7, 9, 8, 6, 5, 4, 5, 6, 5, 4)
+	var msg = fmt.Sprintf("Rata-rata : %.2f", avg)
+	fmt.Println(msg)
 }
+
+// ============== A.17 FUNCTION ==============
+// void function
+func printMessage(message string, arr []string) {
+	var nameString = strings.Join(arr, " ")
+	fmt.Println(message, nameString)
+}
+
+// fungsi yang punya return value
+var randomizer = rand.New(rand.NewSource(time.Now().Unix()))
+
+func randomWithRange(min, max int) int {
+	var value = randomizer.Int()%(max-min+1) + min
+	return value
+}
+
+// ============== A.17 FUNCTION ==============
+
+// ============== A.18 MULTIPLE RETURN FUNCTION ==============
+func calculate(d float64) (float64, float64) {
+	// hitung luas
+	var area = math.Pi * math.Pow(d/2, 2)
+
+	// hitung keliling
+	var circumference = math.Pi * d
+
+	return area, circumference
+}
+
+// predefined return value
+// artinya variable yang digunakan sebagai return bisa didefinisikan diawal
+func calculate2(d float64) (area float64, circumference float64) {
+	area = math.Pi * math.Pow(d/2, 2)
+	circumference = math.Pi * d
+	return
+}
+
+// ============== A.18 MULTIPLE RETURN FUNCTION ==============
+
+// ============== A.19 FUNGSI VARIADIC ==============
+// variadic function adalah fungsi dengan parametr bisa menampung nilai sejenis yang jumlahnya infinity
+// cara akses nya dengan index
+
+func countAverage(numbers ...int) float64 {
+	var total int = 0
+	for _, number := range numbers {
+		total += number
+	}
+
+	var avg = float64(total) / float64(len(numbers))
+	return avg
+}
+
+// ============== A.19 FUNGSI VARIADIC ==============
